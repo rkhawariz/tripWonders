@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Wonder | Ulasan Rekomendasi</title>
+</head>
+<body>
+    {% include 'header.html' %}
+
+                <!-- review Start -->
+                <div class="container pt-4 px-4">
+                    <nav aria-label="breadcrumb" style="margin-top: 10px; margin-bottom: 3rem;">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Beranda</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><i>Ulasan</i></li>
+                        </ol>
+                    </nav>
+                    <div class="row">
+                            <div class="h-100 w-100 bg-light rounded p-4">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <h6 class="mb-0">Rating & Ulasan</h6>
+                                </div>
+                                {% for ulasan in list_ulasan %}
+                                <div class="d-flex align-items-center border-bottom py-3">
+                                    <div class="w-100 ms-3">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-2">{{ ulasan['namaAttraction'] }}</h5>
+                                        </div>
+                                        <h6 class="mb-0">By {{ ulasan['pemberiUlasan'] }}:</h6>
+                                        <p class="mb-0">{{ ulasan['rating'] }}</p><p class="text-secondary">{{ ulasan['review'] }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                    </div>
+                </div>
+                <!-- review End -->
+                <div class="mt-5">
+                    {% include 'footer.html' %}
+                </div>
+
+</body>
+</html>

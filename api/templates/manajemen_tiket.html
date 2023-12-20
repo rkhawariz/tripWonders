@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Wonder | Manajemen Tiket</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- for alert delete -->
+    <script>
+        function deleteConfirmation() {
+            return confirm("Apakah Anda yakin ingin menghapus tiket ini?");
+        }
+    </script>
+
+    <style>
+        .confirmed-icon-container {
+            text-align: center;
+        }
+
+        .confirmed-icon {
+            color: green;
+            font-size: 20px;
+            margin-right: 5px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* Gaya untuk kontainer yang menyimpan ikon dan tombol secara horizontal */
+        .icon-button-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Gaya untuk garis pemisah */
+        .divider-line {
+            border-top: 10px solid #000000;
+            margin: 10px 0;
+            padding-top: 10px;
+        }
+
+        .pending-text {
+            color: red;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <nav aria-label="breadcrumb" class="m-4 ">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><i>Ticket</i></li>
+        </ol>
+    </nav>
+    <!-- <div class="container-fluid">
+        <div class="row justify-content-end m-2">
+            <div class="col-auto">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Add Ticket
+                </button>
+            </div>
+        </div>
+    </div> -->
+    <div class="m-4">
+        <div class="bg-light rounded h-100 p-4">
+            <h6 class="mb-4">Table Ticket</h6>
+
+            {% if is_admin %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID Tiket</th>
+                        <th>Nama Attraction</th>
+                        <th>Nama Pemesan</th>
+                        <th>Harga Tiket</th>
+                        <th>Jumlah Tiket</th>
+                        <th>Total Harga Tiket</th>
+                        <th>Tanggal Pemesanan</th>
+                        <th>Bukti Pembayaran</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tiket in data_tiket %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ tiket.namaAttraction }}</td>
+                        <td>{{ tiket.namaPemesan }}</td>
+                        <td>{{ tiket.hargaTiket }}</td>
+                        <td>{{ tiket.jumlahTiket }}</td>
+                        <td>{{ tiket.totalHargaTiket }}</td>
+                        <td>{{ tiket.tanggal }}</td>
+                        <td class="confirmed-icon-container">
+                            {% if tiket.status == 'confirmed' %}
+                            <i class="fas fa-check confirmed-icon"></i>
+                            {% elif tiket.status == 'pending' %}
+                            <span class="pending-text">Belum upload bukti pembayaran</span>
+                            {% elif tiket.status == 'uploaded' %}
+                            <a href="/manajemen_tiket/lihat_bukti_pembayaran/{{ tiket.id }}"
+                                class="btn btn-info lihat-bukti" data-ticket-id="{{ tiket.id }}">
+                                Lihat Bukti Pembayaran
+                            </a>
+                            {% elif tiket.status == 'reject' %}
+                            <span class="rejected-text">Tiket ditolak</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="buktiModal" tabindex="-1" role="dialog"
+                            aria-labelledby="buktiModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="buktiModalLabel">Informasi Tiket</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="tiketInfo">
+                                            <!-- Tempat untuk menampilkan informasi tiket -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal untuk konfirmasi -->
+                        <div class="modal fade" id="confirmationModal-{{ tiket.id }}" tabindex="-1"
+                            aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmationModalLabel">Konfirmasi Tiket</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% if tiket.status == 'reject' %}
+                                        <form id="rejectReasonForm">
+                                            <label for="rejectReason">Alasan Reject:</label>
+                                            <textarea id="rejectReason" name="rejectReason" rows="4"
+                                                cols="50"></textarea><br><br>
+                                            <button type="button" class="btn btn-danger"
+                                                onclick="updateStatusWithReason('{{ tiket.id }}', 'reject')">Reject</button>
+                                        </form>
+                                        {% else %}
+                                        <p>Konfirmasikan status tiket:</p>
+                                        <button type="button" class="btn btn-success"><a
+                                                href="{{ url_for('konfirmasi_pembayaran', ticket_id=tiket.id) }}">Confirmed</a></button>
+                                        <button type="button" class="btn btn-danger"
+                                            onclick="showRejectModal('{{ tiket.id }}')">Reject</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <td>{{ tiket.status }}</td>
+                        <td>
+                            {% if tiket.status == 'uploaded' %}
+                            <a class="btn btn-warning confirm-payment-link"
+                                onclick="showConfirmationModal('{{ tiket.id }}')">
+                                <i class="fas fa-check-circle"></i> <!-- Ganti dengan ikon yang diinginkan -->
+                            </a>
+                            {% elif tiket.status == 'pending' %}
+                            <div class="icon-button-container">
+                                <span class="confirmed-badge">
+                                    <i class="fas fa-clock"></i>
+                                </span>
+                                <div class="divider-line"></div> <!-- Garis pemisah -->
+                            </div>
+                            {% endif %}
+                            <div class="icon-button-container">
+                                <button type="button" class="btn btn-danger" onclick="deleteTicket('{{ tiket.id }}')">
+                                    <i class="fas fa-trash-alt"></i> <!-- Ganti dengan ikon hapus -->
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Anda tidak memiliki akses untuk melihat halaman ini.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Modal Edit -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Tiket</h5>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <!-- Form fields go here -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveChangesEdit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include your other modal if needed -->
+
+</body>
+
+</html>
+
+<script>
+    function showConfirmationModal(ticketId) {
+        $('#confirmationModal-' + ticketId).modal('show');
+    }
+
+    function updateStatus(ticketId, status) {
+        fetch(`/update_status/${ticketId}/${status}`, {
+                method: 'POST', // Use appropriate HTTP method
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function showRejectModal(ticketId) {
+        $('#confirmationModal-' + ticketId).modal('show');
+    }
+
+    function deleteTicket(ticketId) {
+        if (confirm("Apakah Anda yakin ingin menghapus tiket ini?")) {
+            fetch(`/delete_ticket/${ticketId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    }
+
+    const lihatButtons = document.querySelectorAll('.lihat-bukti');
+
+    // Iterasi melalui setiap tombol
+    lihatButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            // Mendapatkan URL dari atribut href
+            const ticketUrl = this.getAttribute('href');
+
+            // Mengirim permintaan AJAX ke URL yang sesuai
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', ticketUrl, true);
+            xhr.setRequestHeader('Content-type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        const tiketData = JSON.parse(xhr.responseText);
+
+                        // Menampilkan informasi tiket dalam modal
+                        const tiketInfo = document.getElementById('tiketInfo');
+                        tiketInfo.innerHTML = `
+                            <p>Nama Attraction: ${tiketData.namaAttraction}</p>
+                            <p>Nama Pemesan: ${tiketData.namaPemesan}</p>
+                            <p>Harga Tiket: ${tiketData.hargaTiket}</p>
+                            <!-- Tambahkan informasi tiket lainnya sesuai kebutuhan -->
+                        `;
+
+                        // Menampilkan modal
+                        $('#buktiModal').modal('show');
+                    } else {
+                        console.error('Gagal mengambil data tiket');
+                    }
+                }
+            };
+            xhr.send();
+        });
+    });
+</script>

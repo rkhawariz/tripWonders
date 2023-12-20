@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trip Wonders | Detail Destinasi</title>
+    <!-- Favicon-->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../static/img/myservices/logo.png"
+    />
+    <!-- Font Awesome icons (free version)-->
+    <script
+      src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Google fonts-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <!-- Bulma -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <!-- bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <!-- AOS -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <link href="../static/css/mystyle.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+      a {
+        text-decoration: none;
+        /* Menghilangkan garis bawah */
+        color: inherit;
+        /* Menggunakan warna teks default */
+      }
+
+      a:hover {
+        text-decoration: none;
+        /* Menghilangkan garis bawah saat dihover */
+        color: inherit;
+        /* Tetap menggunakan warna teks default saat dihover */
+      }
+
+      h1 span {
+        position: absolute;
+        top: -90px;
+      }
+    </style>
+
+    <script>
+      function totalHarga() {
+        let hargaTiket = $("#hargaTiket").val();
+        let jumlahTiket = $("#jumlahTiket").val();
+
+        let hasilPerkalian = hargaTiket * jumlahTiket;
+
+        $("#totalHargaTiket").val(hasilPerkalian);
+      }
+
+      function hapus() {
+        $(".jumlahTiket").val("");
+        $(".totalHargaTiket").val("");
+      }
+
+      function listingUlasan() {
+        $.ajax({
+          type: "GET",
+          url: "/getulasan",
+          data: {},
+          success: function (response) {
+            let ulasan = response["ulasan"];
+            console.log(ulasan);
+            $("#cardsUlasan").empty();
+            if (ulasan.length === 0) {
+              let temp_html = `<div class="card ms-2 me-2" style="min-height: 10rem; width: 20rem; flex-shrink: 0">
+                <div class="card-body bg-body-secondary">
+                  <p class="card-text text-body-secondary pt-2">
+                    Belum ada ulasan
+                  </p>
+                </div>
+              </div>
+              `;
+              $("#cardsUlasan").append(temp_html);
+            } else {
+              $("#cardsUlasan").empty();
+              for (let i = 0; i < destinations.length; i++) {
+                let ulasan = destinations[i]["ulasan"];
+                let pengguna = destinations[i]["pengguna"];
+                let rating = destinations[i]["rating"];
+                let temp_html = `<div class="card ms-2 me-2" style="width: 20rem; flex-shrink: 0">
+                <div class="card-body bg-body-secondary">
+                  <p class="card-text text-body-secondary pt-2">
+                    "${ulasan}"
+                  </p>
+                  <p>${pengguna} | ${rating}</p>
+                </div>
+              </div>
+              `;
+                $("#cardsUlasan").append(temp_html);
+              }
+            }
+          },
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    <!-- Navbar start-->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand pt-3" href="#page-top"
+          ><img src="../static/img/logo.svg" alt="..."
+        /></a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          Menu
+          <i class="fas fa-bars ms-1"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul
+            class="navbar-nav text-uppercase text-center ms-auto py-4 py-lg-0"
+          >
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/destinasi">Destinations</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About Us</a>
+            </li>
+          </ul>
+          <!-- {% if not logged_in %} -->
+          <button class="btn btn-light ms-auto">
+            <a href="/login">Login</a>
+          </button>
+          <button class="btn btn-warning ms-2">
+            <a href="/sign-up">Sign Up</a>
+          </button>
+          <!-- {% endif %} -->
+
+          <!-- {% if logged_in %} -->
+          <!-- user menu start-->
+          <div
+            class="dropdown text-uppercase text-center no-arrow navbar-nav ms-auto"
+          >
+            <a
+              class="dropdown-toggle nav-item nav-link"
+              type="button"
+              id="usermenu"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <span class="mr-2 d-none d-lg-inline small"
+                >{{ user_info.nama }}</span
+              >
+              <img
+                class="img-profile rounded-circle"
+                src="../{{ user_info.foto_profile }}"
+              />
+            </a>
+            <ul class="dropdown-menu submenu dropdown-menu-dark">
+              <li>
+                <a class="dropdown-item" href="/profile_User/{{ user_info.nama }}"
+                  ><i class="fas fa-user fa-sm fa-fw mr-2"></i>Profile</a
+                >
+              </li>
+
+              <!-- {% if is_admin %} -->
+              <li>
+                <a class="dropdown-item" href="/beranda_admin"
+                  ><i class="fas fa-chart-line fa-sm fa-fw mr-2"></i
+                  >Dashboard</a
+                >
+              </li>
+              <!-- {% else %} -->
+              <li>
+                <a class="dropdown-item" href="/cek_pesanan/{{ user_info.nama }}"
+                  ><i class="fas fa-ticket fa-sm fa-fw mr-2"></i>Cek Pesanan</a
+                >
+              </li>
+              <!-- {% endif %} -->
+
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li>
+                <a class="dropdown-item" onclick="sign_out()"
+                  ><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
+                  Logout</a
+                >
+              </li>
+            </ul>
+          </div>
+          <!-- end user menu -->
+          <!-- {% endif %} -->
+        </div>
+      </div>
+    </nav>
+    <!-- navbar end -->
+
+    <!-- carousel start -->
+    <section id="home" class="mycontainer">
+      <div id="slide">
+        <div class="overlay"></div>
+        {% for key, attraction in destinasi_info.attractions.items() %}
+          {% if key == "attraction1" %}
+        <div
+          class="item"
+          style="
+            background-image: url(../{{ attraction.gambar }});
+          "
+        >
+          <div class="content">
+            <!-- judul attraction 1 -->
+            <div class="attr-title">{{ attraction.judul }}</div>
+            <!-- subjudul attraction 1 -->
+            <div class="des">
+              {{ attraction.subtitle }}
+            </div>
+            <div class="tombol-container">
+              <button
+                class="btn btn-light mb-2"
+                data-bs-toggle="modal"
+                data-bs-target="#mymodal"
+                data-bs-attraction="{{ attraction.judul }}"
+                data-bs-pemesan="{{ user_info.nama }}"
+                data-bs-hargaTiket="{{ attraction.harga }}"
+                data-bs-email="{{ user_info.email }}"
+              >
+                Pesan Tiket
+              </button>
+              <a href="#attraction1"
+                ><button class="btn btn-outline-light">Lihat Detail</button></a
+              >
+            </div>
+          </div>
+        </div>
+                {% endif %}
+            {% endfor %}
+
+            {% for key, attraction in destinasi_info.attractions.items() %}
+          {% if key == "attraction2" %}
+        <div
+          class="item"
+          style="
+            background-image: url(../{{ attraction.gambar }});
+          "
+        >
+          <div class="content">
+            <div class="attr-title">{{ attraction.judul }}</div>
+            <div class="des">
+              {{ attraction.subtitle}}
+            </div>
+            <div class="tombol-container">
+              <!-- ganti dengan Jinja2 -->
+              <button
+                class="btn btn-light mb-2"
+                data-bs-toggle="modal"
+                data-bs-target="#mymodal"
+                data-bs-attraction="{{ attraction.judul }}"
+                data-bs-pemesan="{{ user_info.nama }}"
+                data-bs-hargaTiket="{{ attraction.harga }}"
+                data-bs-email="{{ user_info.email }}"
+              >
+                Pesan Tiket
+              </button>
+              <a href="#attraction2"
+                ><button class="btn btn-outline-light">Lihat Detail</button></a
+              >
+            </div>
+          </div>
+        </div>
+                {% endif %}
+            {% endfor %}
+
+            {% for key, attraction in destinasi_info.attractions.items() %}
+            {% if key == "attraction3" %}
+          <div
+            class="item"
+            style="
+              background-image: url(../{{ attraction.gambar }});
+            "
+          >
+            <div class="content">
+              <div class="attr-title">{{ attraction.judul }}</div>
+              <div class="des">
+                {{ attraction.subtitle}}
+              </div>
+              <div class="tombol-container">
+                <!-- ganti dengan Jinja2 -->
+                <button
+                  class="btn btn-light mb-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#mymodal"
+                  data-bs-attraction="{{ attraction.judul }}"
+                  data-bs-pemesan="{{ user_info.nama }}"
+                  data-bs-hargaTiket="{{ attraction.harga }}"
+                  data-bs-email="{{ user_info.email }}"
+                >
+                  Pesan Tiket
+                </button>
+                <a href="#attraction3"
+                  ><button class="btn btn-outline-light">Lihat Detail</button></a
+                >
+              </div>
+            </div>
+          </div>
+                  {% endif %}
+              {% endfor %}
+      </div>
+      <div class="mybuttons">
+        <button onclick="prev()" id="prev">
+          <i class="fa-solid fa-angle-left"></i>
+        </button>
+        <button onclick="next()" id="next">
+          <i class="fa-solid fa-angle-right"></i>
+        </button>
+      </div>
+    </section>
+    <!-- carousel end -->
+
+    <!-- Modal Start -->
+    <div
+      class="modal fade"
+      id="mymodal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Pesan Tiket</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="/pesantiket">
+              <div class="mb-3">
+                <label for="attractionGive" class="col-form-label"
+                  >Nama Attraction:</label
+                >
+                <input type="text" class="attractionGive form-control" id="attractionGive" name="attractionGive" readonly/>
+              </div>
+              <div class="mb-3">
+                <label for="namaPemesan" class="col-form-label"
+                  >Nama Pemesan:</label
+                >
+                <input type="text" class="pemesan form-control" id="pemesan" name="namaPemesan" readonly/>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="col-form-label"
+                  >Email Pemesan:</label
+                >
+                <input type="email" class="email form-control" id="email" name="emailPemesan" readonly/>
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label"
+                  >Harga Satuan Tiket: (Rp.)</label
+                >
+                <input
+                  type="text"
+                  class="hargaTiket form-control"
+                  id="hargaTiket"
+                  name="hargaTiket"
+                  readonly
+                />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label"
+                  >Jumlah Tiket:</label
+                >
+                <input
+                  type="number"
+                  class="jumlahTiket form-control"
+                  id="jumlahTiket"
+                  name="jumlahTiket"
+                  oninput="totalHarga()"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label"
+                  >Total Harga Tiket: (Rp.)</label
+                >
+                <input
+                  type="number"
+                  class="totalHargaTiket form-control"
+                  id="totalHargaTiket"
+                  name="totalHargaTiket"
+                  readonly
+                />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label"
+                  >Tanggal:</label
+                >
+                <input type="date" class="tiket form-control" id="tanggal" name="tanggal" />
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  onclick="hapus()"
+                  class="btn btn-danger"
+                  data-bs-dismiss="modal"
+                >
+                  Batal
+                </button>
+                <button type="submit" class="btn btn-primary">Pesan Tiket</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal End -->
+
+    <section class="page-section bg-light">
+      <div class="text-center">
+        <!-- nama destinasi -->
+        <h2 class="section-heading text-uppercase">
+          {{ destinasi_info.nama_destinasi }}
+        </h2>
+        <br />
+        <h3 class="section-subheading text-muted mr-4 ml-4">
+          “{{ destinasi_info.quotes }}”
+        </h3>
+      </div>
+    </section>
+
+    <section>
+      <div class="container myarticle">
+        <!-- gambar artikel -->
+        <img
+          class="article-img"
+          style="border-radius: 15px; max-height: 18rem"
+          src="../{{ destinasi_info.gambar_artikel }}"
+          alt=""
+        />
+        <!-- paragraf artikel -->
+        <p style="text-indent: 50px;">
+          {{ destinasi_info.deskripsi_artikel }}
+        </p>
+      </div>
+      <div class="container myarticle">
+        {% for key, attraction in destinasi_info.attractions.items() %}
+            {% if key == "attraction1" %}
+        <!-- judul attraction 1 -->
+        <h1><span id="attraction1"></span>{{ attraction.judul }}</h1>
+        <!-- gambar attraction 1 -->
+        <img
+          class="mt-1"
+          style="border-radius: 20px"
+          src="../{{ attraction.gambar }}"
+          alt=""
+        />
+        <div class="row flex-column flex-md-row justify-content-between">
+          <!-- Kolom Kiri -->
+          <!-- deskripsi attraction 1 -->
+          <div class="col-md-8 column">
+            <p class="parag">
+              {{ attraction.deskripsi_attraction1}}
+            </p>
+          </div>
+
+          <!-- Kolom Kanan -->
+          <div class="col-md-4 column mt-2">
+            <div id="cardsUlasan" style="overflow-x: scroll; display: flex">
+              <div
+                class="card ms-2 me-2"
+                style="min-height: 10rem; width: 20rem; flex-shrink: 0"
+              >
+                <div class="card-body bg-body-secondary">
+                  <p class="card-text text-body-secondary pt-2">
+                    Belum ada ulasan
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a style="color: #ffc800" href="#">Pesan Tiket >></a>
+      </div>
+              {% endif %}
+          {% endfor %}
+      <br />
+      <div class="container myarticle">
+        {% for key, attraction in destinasi_info.attractions.items() %}
+            {% if key == "attraction2" %}
+        <!-- judul attraction 2 -->
+        <h1><span id="attraction2"></span>{{ attraction.judul }}</h1>
+        <!-- gambar attraction 2 -->
+        <img
+          class="mt-1"
+          style="border-radius: 20px"
+          src="../{{ attraction.gambar }}"
+          alt=""
+        />
+        <div class="row flex-column flex-md-row justify-content-between">
+          <!-- Kolom Kiri -->
+          <!-- deskripsi attraction 2 -->
+          <div class="col-md-8 column">
+            <p class="parag">
+              {{ attraction.deskripsi_attraction2}}
+            </p>
+          </div>
+
+          <!-- Kolom Kanan -->
+          <div class="col-md-4 column mt-2">
+            <div id="cardsUlasan" style="overflow-x: scroll; display: flex">
+              <div
+                class="card ms-2 me-2"
+                style="min-height: 10rem; width: 20rem; flex-shrink: 0"
+              >
+                <div class="card-body bg-body-secondary">
+                  <p class="card-text text-body-secondary pt-2">
+                    Belum ada ulasan
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a style="color: #ffc800" href="#">Pesan Tiket >></a>
+      </div>
+      {% endif %}
+          {% endfor %}
+      <br />
+      <div class="container myarticle">
+        {% for key, attraction in destinasi_info.attractions.items() %}
+            {% if key == "attraction3" %}
+        <!-- judul attraction 3 -->
+        <h1><span id="attraction3"></span>{{ attraction.judul }}</h1>
+        <!-- gambar attraction 3 -->
+        <img
+          class="mt-1"
+          style="border-radius: 20px"
+          src="../{{ attraction.gambar }}"
+          alt=""
+        />
+        <div class="row flex-column flex-md-row justify-content-between">
+          <!-- Kolom Kiri -->
+          <div class="col-md-8 column">
+            <!-- deskripsi attraction 3 -->
+            <p class="parag">
+              {{ attraction.deskripsi_attraction3}}
+            </p>
+          </div>
+
+          <!-- Kolom Kanan -->
+          <div class="col-md-4 column mt-2">
+            <div id="cardsUlasan" style="overflow-x: scroll; display: flex">
+              <div
+                class="card ms-2 me-2"
+                style="min-height: 10rem; width: 20rem; flex-shrink: 0"
+              >
+                <div class="card-body bg-body-secondary">
+                  <p class="card-text text-body-secondary pt-2">
+                    Belum ada ulasan
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a style="color: #ffc800" href="#">Pesan Tiket >></a>
+      </div>
+      {% endif %}
+          {% endfor %}
+    </section>
+    <hr />
+
+    {% include 'footerUser.html' %}
+
+    <!-- bootstrap js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS js -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <!-- Core theme JS-->
+    <script src="../static/js/scripts.js"></script>
+   
+   <script>
+  function listingUlasan() {
+    $.ajax({
+      type: "GET",
+      url: "/getulasan",
+      data: {},
+      success: function (response) {
+        let ulasan = response["ulasan"];
+        console.log(ulasan);
+        $("#cardsUlasan").empty();
+        if (ulasan.length === 0) {
+          let temp_html = `<div class="card ms-2 me-2" style="min-height: 10rem; width: 20rem; flex-shrink: 0">
+            <div class="card-body bg-body-secondary">
+              <p class="card-text text-body-secondary pt-2">
+                Belum ada ulasan
+              </p>
+            </div>
+          </div>
+          `;
+          $("#cardsUlasan").append(temp_html);
+        } else {
+          $("#cardsUlasan").empty();
+          for (let i = 0; i < ulasan.length; i++) {
+            let review = ulasan[i]["review"];
+            let user = ulasan[i]["user"];
+            let rating = ulasan[i]["rating"];
+            let temp_html = `<div class="card ms-2 me-2" style="width: 20rem; flex-shrink: 0">
+              <div class="card-body bg-body-secondary">
+                <p class="card-text text-body-secondary pt-2">
+                  "${review}"
+                </p>
+                <p>${user} | ${rating}</p>
+              </div>
+            </div>
+            `;
+            $("#cardsUlasan").append(temp_html);
+          }
+        }
+      },
+    });
+  }
+
+  // Panggil ketika halaman dimuat
+  $(document).ready(function() {
+    listingUlasan();
+  });
+      
+      const myModal = document.querySelector("#mymodal");
+      myModal.addEventListener("show.bs.modal", function (event) {
+        const button = event.relatedTarget;
+
+        const attraction = button.getAttribute("data-bs-attraction");
+        const pemesan = button.getAttribute("data-bs-pemesan");
+        const hargaTiket = button.getAttribute("data-bs-hargaTiket");
+        const email = button.getAttribute("data-bs-email");
+        console.log(email)
+
+        myModal.querySelector(
+          ".modal-title"
+        ).textContent = `Pesan Tiket ${attraction}`;
+        const inputPemesan = myModal.querySelector(".modal-body .pemesan");
+        const inputEmail = myModal.querySelector(
+          ".modal-body .email"
+        );
+        inputPemesan.value = pemesan;
+        inputEmail.value = email;
+        const inputHargaTiket = myModal.querySelector(
+          ".modal-body .hargaTiket"
+        );
+        const inputAttraction = myModal.querySelector(".modal-body .attractionGive");
+        inputHargaTiket.value = hargaTiket;
+        inputAttraction.value = attraction;
+      });
+
+
+    </script>
+  </body>
+</html>
+
+

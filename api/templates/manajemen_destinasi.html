@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../static/img/myservices/logo.png"
+    />
+    <title>Trip Wonder | Manajemen Destinasi</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+
+    <style>
+      /* Style untuk modal content */
+      .modal-content {
+        background-color: #d3ee8b;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2000 1500'%3E%3Cdefs%3E%3CradialGradient id='a' gradientUnits='objectBoundingBox'%3E%3Cstop offset='0' stop-color='%23E2FBFF'/%3E%3Cstop offset='1' stop-color='%23D3EE8B'/%3E%3C/radialGradient%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='0' y1='750' x2='1550' y2='750'%3E%3Cstop offset='0' stop-color='%23dbf5c5'/%3E%3Cstop offset='1' stop-color='%23D3EE8B'/%3E%3C/linearGradient%3E%3Cpath id='s' fill='url(%23b)' d='M1549.2 51.6c-5.4 99.1-20.2 197.6-44.2 293.6c-24.1 96-57.4 189.4-99.3 278.6c-41.9 89.2-92.4 174.1-150.3 253.3c-58 79.2-123.4 152.6-195.1 219c-71.7 66.4-149.6 125.8-232.2 177.2c-82.7 51.4-170.1 94.7-260.7 129.1c-90.6 34.4-184.4 60-279.5 76.3C192.6 1495 96.1 1502 0 1500c96.1-2.1 191.8-13.3 285.4-33.6c93.6-20.2 185-49.5 272.5-87.2c87.6-37.7 171.3-83.8 249.6-137.3c78.4-53.5 151.5-114.5 217.9-181.7c66.5-67.2 126.4-140.7 178.6-218.9c52.3-78.3 96.9-161.4 133-247.9c36.1-86.5 63.8-176.2 82.6-267.6c18.8-91.4 28.6-184.4 29.6-277.4c0.3-27.6 23.2-48.7 50.8-48.4s49.5 21.8 49.2 49.5c0 0.7 0 1.3-0.1 2L1549.2 51.6z'/%3E%3Cg id='g'%3E%3Cuse href='%23s' transform='scale(0.12) rotate(60)'/%3E%3Cuse href='%23s' transform='scale(0.2) rotate(10)'/%3E%3Cuse href='%23s' transform='scale(0.25) rotate(40)'/%3E%3Cuse href='%23s' transform='scale(0.3) rotate(-20)'/%3E%3Cuse href='%23s' transform='scale(0.4) rotate(-30)'/%3E%3Cuse href='%23s' transform='scale(0.5) rotate(20)'/%3E%3Cuse href='%23s' transform='scale(0.6) rotate(60)'/%3E%3Cuse href='%23s' transform='scale(0.7) rotate(10)'/%3E%3Cuse href='%23s' transform='scale(0.835) rotate(-40)'/%3E%3Cuse href='%23s' transform='scale(0.9) rotate(40)'/%3E%3Cuse href='%23s' transform='scale(1.05) rotate(25)'/%3E%3Cuse href='%23s' transform='scale(1.2) rotate(8)'/%3E%3Cuse href='%23s' transform='scale(1.333) rotate(-60)'/%3E%3Cuse href='%23s' transform='scale(1.45) rotate(-30)'/%3E%3Cuse href='%23s' transform='scale(1.6) rotate(10)'/%3E%3C/g%3E%3C/defs%3E%3Cg transform='rotate(0 0 0)'%3E%3Cg transform='rotate(0 0 0)'%3E%3Ccircle fill='url(%23a)' r='3000'/%3E%3Cg opacity='0.5'%3E%3Ccircle fill='url(%23a)' r='2000'/%3E%3Ccircle fill='url(%23a)' r='1800'/%3E%3Ccircle fill='url(%23a)' r='1700'/%3E%3Ccircle fill='url(%23a)' r='1651'/%3E%3Ccircle fill='url(%23a)' r='1450'/%3E%3Ccircle fill='url(%23a)' r='1250'/%3E%3Ccircle fill='url(%23a)' r='1175'/%3E%3Ccircle fill='url(%23a)' r='900'/%3E%3Ccircle fill='url(%23a)' r='750'/%3E%3Ccircle fill='url(%23a)' r='500'/%3E%3Ccircle fill='url(%23a)' r='380'/%3E%3Ccircle fill='url(%23a)' r='250'/%3E%3C/g%3E%3Cg transform='rotate(0 0 0)'%3E%3Cuse href='%23g' transform='rotate(10)'/%3E%3Cuse href='%23g' transform='rotate(120)'/%3E%3Cuse href='%23g' transform='rotate(240)'/%3E%3C/g%3E%3Ccircle fill-opacity='0.1' fill='url(%23a)' r='3000'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        background-attachment: fixed;
+        background-size: cover;
+        border-radius: 10px;
+      }
+
+      /* Style untuk tombol tutup */
+      .btn-close {
+        color: #333;
+        opacity: 1;
+      }
+
+      /* Style untuk judul */
+      .modal-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      /* Style untuk input */
+      .form-control {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      /* Style untuk label */
+      .form-label {
+        color: #666;
+      }
+
+      /* Style untuk tombol Simpan Destinasi */
+      .btn-primary {
+        background-color: #4285f4;
+        border: none;
+      }
+
+      /* Memberi ruang antar elemen */
+      .mb-4 {
+        margin-bottom: 1.5rem;
+      }
+
+      hr.myhr {
+        border: 1px solid black;
+      }
+
+      /* Style untuk deskripsi */
+      textarea.form-control {
+        resize: vertical;
+      }
+
+      /* CSS untuk pagination */
+      .pagination {
+        display: flex;
+        justify-content: flex-end;
+        /* padding: 20px; */
+      }
+
+      .page-item {
+        margin: 0 5px;
+        list-style: none;
+      }
+
+      .page-link {
+        color: #333;
+        text-decoration: none;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .page-link:hover {
+        background-color: #d4d0d0;
+        color: #555;
+      }
+
+      /* Untuk mode mobile */
+      @media (max-width: 767px) {
+        .table-responsive-sm {
+          display: block;
+          width: 100%;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          -ms-overflow-style: -ms-autohiding-scrollbar;
+          margin-bottom: 16px;
+          /* Menambahkan jarak bawah pada mode mobile */
+        }
+
+        .table-responsive-sm > .table {
+          margin-bottom: 0;
+          background-color: transparent;
+        }
+
+        .table-responsive-sm > .table > thead > tr > th,
+        .table-responsive-sm > .table > tbody > tr > th,
+        .table-responsive-sm > .table > tfoot > tr > th,
+        .table-responsive-sm > .table > thead > tr > td,
+        .table-responsive-sm > .table > tbody > tr > td,
+        .table-responsive-sm > .table > tfoot > tr > td {
+          white-space: nowrap;
+        }
+
+        .table-responsive-sm > .table-bordered {
+          border: 0;
+        }
+
+        .table-responsive-sm > .table-bordered > thead > tr > th:first-child,
+        .table-responsive-sm > .table-bordered > tbody > tr > th:first-child,
+        .table-responsive-sm > .table-bordered > tfoot > tr > th:first-child,
+        .table-responsive-sm > .table-bordered > thead > tr > td:first-child,
+        .table-responsive-sm > .table-bordered > tbody > tr > td:first-child,
+        .table-responsive-sm > .table-bordered > tfoot > tr > td:first-child {
+          border-left: 0;
+        }
+
+        .table-responsive-sm > .table-bordered > thead > tr > th:last-child,
+        .table-responsive-sm > .table-bordered > tbody > tr > th:last-child,
+        .table-responsive-sm > .table-bordered > tfoot > tr > th:last-child,
+        .table-responsive-sm > .table-bordered > thead > tr > td:last-child,
+        .table-responsive-sm > .table-bordered > tbody > tr > td:last-child,
+        .table-responsive-sm > .table-bordered > tfoot > tr > td:last-child {
+          border-right: 0;
+        }
+      }
+    </style>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          fetch("/add_destinasi", {
+            method: "POST",
+            body: new FormData(form),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === "success") {
+                Swal.fire({
+                  title: "Sukses!",
+                  text: data.msg,
+                  icon: "success",
+                  confirmButtonText: "OK",
+                }).then((result) => {
+                  if (result.isConfirmed || result.isDismissed) {
+                    location.reload();
+                  }
+                });
+              } else {
+                Swal.fire({
+                  title: "Error!",
+                  text: "Terjadi kesalahan. Silakan coba lagi.",
+                  icon: "error",
+                  confirmButtonText: "OK",
+                });
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              Swal.fire({
+                title: "Error!",
+                text: "Terjadi kesalahan. Silakan coba lagi.",
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            });
+        });
+      });
+
+      function confirmHapus(id) {
+        Swal.fire({
+          title: "Apakah kamu yakin ingin menghapus destinasi?",
+          text: "Inputnya capek loh",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Ya, hapus!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(`/delete_destinasi/${id}`, {
+              method: "DELETE",
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data);
+                Swal.fire(
+                  "Terhapus!",
+                  "Destinasi berhasil dihapus",
+                  "success"
+                ).then(() => {
+                  location.reload();
+                });
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+                Swal.fire("Error!", "terdapat error", "error");
+              });
+          }
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    {% include 'header.html' %}
+
+    <!-- review Start -->
+    <div class="container-fluid pt-4 px-4">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <i>Manajemen Destinasi</i>
+          </li>
+        </ol>
+      </nav>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <!-- Tombol Modal -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#ModalLoginForm"
+              style="margin-bottom: 10px; float: right"
+            >
+              &plus; Add
+            </button>
+
+            <!-- Modal -->
+            <div
+              class="modal fade"
+              id="ModalLoginForm"
+              tabindex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      Tambah Destinasi
+                    </h5>
+                    <button
+                      type="button"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div class="modal-body p-4">
+                    <form
+                      enctype="multipart/form-data"
+                      method="POST"
+                      action="/add_destinasi"
+                    >
+                      <!-- Nama Destinasi -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="text"
+                          id="namaDestinasi"
+                          class="form-control"
+                          name="namaDestinasi"
+                        />
+                        <label class="form-label" for="namaDestinasi"
+                          >Nama Destinasi</label
+                        >
+                      </div>
+
+                      <!-- gambar card destinasi -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="file"
+                          id="gambarCardDestinasi"
+                          class="form-control"
+                          name="gambarCardDestinasi"
+                        />
+                        <label class="form-label" for="gambarCardDestinasi"
+                          >Unggah Gambar Card Destinasi (Potrait)</label
+                        >
+                        <hr class="myhr" />
+                      </div>
+
+                      <!-- Judul Attraction 1 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="text"
+                          id="judulAttraction1"
+                          class="form-control"
+                          name="judulAttraction1"
+                        />
+                        <label class="form-label" for="judulAttraction1"
+                          >Judul Attraction 1</label
+                        >
+                      </div>
+
+                      <!-- Subtitle Attraction 1 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="text"
+                          id="subtitleAttraction1"
+                          class="form-control"
+                          name="subtitleAttraction1"
+                        />
+                        <label class="form-label" for="subtitleAttraction1"
+                          >Subtitle Attraction 1</label
+                        >
+                      </div>
+
+                      <!-- Harga Atrraction 1 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="number"
+                          id="hargaAttraction1"
+                          class="form-control"
+                          name="hargaAttraction1"
+                        />
+                        <label class="form-label" for="hargaAttraction1"
+                          >Harga Tiket Attraction 1</label
+                        >
+                      </div>
+
+                      <!-- Gambar Attraction 1 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="file"
+                          id="gambarAttraction1"
+                          class="form-control"
+                          name="gambarAttraction1"
+                        />
+                        <label class="form-label" for="gambarAttraction1"
+                          >Unggah Gambar Attraction 1 (landscape)</label
+                        >
+                      </div>
+
+                      <!-- Deskripsi Attraction 1 -->
+                      <div class="form-outline mb-4">
+                        <textarea
+                          id="deskripsiAttraction1"
+                          class="form-control"
+                          rows="4"
+                          name="deskripsiAttraction1"
+                        ></textarea>
+                        <label class="form-label" for="deskripsiAttraction1"
+                          >Deskripsi Attraction 1</label
+                        >
+                        <hr class="myhr" />
+                      </div>
+
+                      <!-- Judul Attraction 2 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="text"
+                          id="judulAttraction2"
+                          class="form-control"
+                          name="judulAttraction2"
+                        />
+                        <label class="form-label" for="judulAttraction2"
+                          >Judul Attraction 2</label
+                        >
+                      </div>
+
+                      <!-- Subtitle Attraction 2 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="text"
+                          id="subtitleAttraction2"
+                          class="form-control"
+                          name="subtitleAttraction2"
+                        />
+                        <label class="form-label" for="subtitleAttraction2"
+                          >Subtitle Attraction 2</label
+                        >
+                      </div>
+
+                      <!-- Harga Atrraction 2 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="number"
+                          id="hargaAttraction2"
+                          class="form-control"
+                          name="hargaAttraction2"
+                        />
+                        <label class="form-label" for="hargaAttraction2"
+                          >Harga Tiket Attraction 2</label
+                        >
+                      </div>
+
+                      <!-- Gambar Attraction 2 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="file"
+                          id="gambarAttraction2"
+                          class="form-control"
+                          name="gambarAttraction2"
+                        />
+                        <label class="form-label" for="gambarAttraction2"
+                          >Unggah Gambar Attraction 2 (landscape)</label
+                        >
+                      </div>
+
+                      <!-- Deskripsi Attraction 2 -->
+                      <div class="form-outline mb-4">
+                        <textarea
+                          id="deskripsiAttraction2"
+                          class="form-control"
+                          rows="4"
+                          name="deskripsiAttraction2"
+                        ></textarea>
+                        <label class="form-label" for="deskripsiAttraction2"
+                          >Deskripsi Attraction 2</label
+                        >
+                        <hr class="myhr" />
+                      </div>
+
+                      <!-- Judul Attraction 3 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="text"
+                          id="judulAttraction2"
+                          class="form-control"
+                          name="judulAttraction3"
+                        />
+                        <label class="form-label" for="judulAttraction2"
+                          >Judul Attraction 3</label
+                        >
+                      </div>
+
+                      <!-- Subtitle Attraction 3 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="text"
+                          id="subtitleAttraction3"
+                          class="form-control"
+                          name="subtitleAttraction3"
+                        />
+                        <label class="form-label" for="subtitleAttraction3"
+                          >Subtitle Attraction 3</label
+                        >
+                      </div>
+
+                      <!-- Harga Atrraction 3 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="number"
+                          id="hargaAttraction3"
+                          class="form-control"
+                          name="hargaAttraction3"
+                        />
+                        <label class="form-label" for="hargaAttraction3"
+                          >Harga Tiket Attraction 3</label
+                        >
+                      </div>
+
+                      <!-- Gambar Attraction 3 -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="file"
+                          id="gambarAttraction3"
+                          class="form-control"
+                          name="gambarAttraction3"
+                        />
+                        <label class="form-label" for="gambarAttraction3"
+                          >Unggah Gambar Attraction 3 (landscape)</label
+                        >
+                      </div>
+
+                      <!-- Deskripsi Attraction 3 -->
+                      <div class="form-outline mb-4">
+                        <textarea
+                          id="deskripsiAttraction3"
+                          class="form-control"
+                          rows="4"
+                          name="deskripsiAttraction3"
+                        ></textarea>
+                        <label class="form-label" for="deskripsiAttraction3"
+                          >Deskripsi Attraction 3</label
+                        >
+                        <hr class="myhr" />
+                      </div>
+
+                      <!-- Quotes -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="text"
+                          id="quotes"
+                          class="form-control"
+                          name="quotes"
+                        />
+                        <label class="form-label" for="quotes">Quotes</label>
+                      </div>
+
+                      <!-- Gambar Artikel -->
+                      <div class="form-outline mb-4">
+                        <input
+                          type="file"
+                          id="gambarArtikel"
+                          class="form-control"
+                          name="gambarArtikel"
+                        />
+                        <label class="form-label" for="gambarArtikel"
+                          >Unggah Gambar Artikel (1:1)</label
+                        >
+                      </div>
+
+                      <!-- Deskripsi Artikel -->
+                      <div class="form-outline mb-4">
+                        <textarea
+                          id="deskripsiArtikel"
+                          class="form-control"
+                          rows="4"
+                          name="deskripsiArtikel"
+                        ></textarea>
+                        <label class="form-label" for="deskripsiArtikel"
+                          >Deskripsi Artikel</label
+                        >
+                      </div>
+
+                      <!-- Submit button -->
+                      <button type="submit" class="btn btn-primary btn-block">
+                        Simpan Destinasi
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- table start -->
+            <div class="table-responsive-sm">
+              <table class="table table-bordered custom-table">
+                <thead class="table-success">
+                  <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">Nama Destinasi</th>
+                    <th scope="col">Attraction 1</th>
+                    <th scope="col">Attraction 2</th>
+                    <th scope="col">Attraction 3</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for dest in destinasi %}
+                  <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ dest.nama_destinasi }}</td>
+
+                    <td>
+                      <strong>{{ dest.attractions.attraction1.judul }}</strong
+                      ><br />
+                      Harga: Rp. {{ dest.attractions.attraction1.harga }}<br />
+                    </td>
+                    <td>
+                      <strong>{{ dest.attractions.attraction2.judul }}</strong
+                      ><br />
+                      Harga: Rp. {{ dest.attractions.attraction2.harga }}<br />
+                    </td>
+                    <td>
+                      <strong>{{ dest.attractions.attraction3.judul }}</strong
+                      ><br />
+                      Harga: Rp. {{ dest.attractions.attraction3.harga }}<br />
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-sm"
+                        data-toggle="modal"
+                        data-target="#editModal{{ loop.index }}"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      |
+                      <button
+                        class="btn btn-danger btn-sm"
+                        onclick="confirmHapus('{{ dest._id|string }}')"
+                      >
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+
+                      <!-- <a
+                        class="btn btn-danger btn-sm"
+                        href="{{ url_for('delete_destinasi', id=dest._id|string) }}"
+                        ><i class="fas fa-trash-alt"></i
+                      ></a> -->
+
+                      <!-- modal start -->
+                      <div
+                        class="modal fade"
+                        id="editModal{{ loop.index }}"
+                        tabindex="-1"
+                        role="dialog"
+                        aria-labelledby="editModalLabel{{ loop.index }}"
+                        aria-hidden="true"
+                      >
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5
+                                class="modal-title"
+                                id="editModalLabel{{ loop.index }}"
+                              >
+                                Edit Destinasi {{ dest.nama_destinasi }}
+                              </h5>
+                              <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close"
+                              >
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <!-- Edit form -->
+                              <form
+                                class="editForm"
+                                action="{{ url_for('edit_destinasi', id=dest._id|string) }}"
+                                method="POST"
+                              >
+                                <div class="form-group">
+                                  <hr class="myhr" />
+                                  <label for="editField">
+                                    Harga tiket {{
+                                    dest.attractions.attraction1.judul
+                                    }}:</label
+                                  >
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="attraction1_harga"
+                                    name="attraction1_harga"
+                                    value="{{ dest.attractions.attraction1.harga }}"
+                                  />
+                                  <label for="editField">
+                                    Harga tiket {{
+                                    dest.attractions.attraction2.judul
+                                    }}:</label
+                                  >
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="attraction2_harga"
+                                    name="attraction2_harga"
+                                    value="{{ dest.attractions.attraction2.harga }}"
+                                  />
+                                  <label for="editField">
+                                    Harga tiket {{
+                                    dest.attractions.attraction3.judul
+                                    }}:</label
+                                  >
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="attraction3_harga"
+                                    name="attraction3_harga"
+                                    value="{{ dest.attractions.attraction3.harga }}"
+                                  />
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                  Simpan
+                                </button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-end">
+                <li class="page-item">
+                  <a class="page-link" href="#">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#">Next</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-5">{% include 'footer.html' %}</div>
+
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <script>
+      Swal.fire({
+        icon: '{{ "success" if messages[0][1] == "success" else "success" }}',
+        title: "success",
+        text: "{{ messages[0] }}",
+      });
+    </script>
+    {% endif %} {% endwith %}
+    <!-- bootstrap js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

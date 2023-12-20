@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trip Wonder | Manajemen Tiket</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <!-- for alert delette -->
+    <script>
+      function deleteConfirmation() {
+        if (confirm("Apakah Anda yakin ingin menghapus tiket ini?")) {
+        } else {
+        }
+      }
+    </script>
+
+    <script>
+      $(document).ready(function () {
+        // Inisialisasi Chart.js
+        let ctx1 = document.getElementById("myChart").getContext("2d");
+        let chart = new Chart(ctx1, {
+          type: "bar",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: "Jumlah Pemesanan per Bulan",
+                data: [],
+                backgroundColor: [
+                  "rgba(255, 99, 132, 0.5)", // Red
+                  "rgba(54, 162, 235, 0.5)", // Blue
+                  "rgba(255, 206, 86, 0.5)", // Yellow
+                  "rgba(75, 192, 192, 0.5)", // Green
+                  "rgba(153, 102, 255, 0.5)", // Purple
+                  "rgba(255, 159, 64, 0.5)", // Orange
+                ],
+                borderColor: [
+                  "rgba(255, 99, 132, 1)", // Red
+                  "rgba(54, 162, 235, 1)", // Blue
+                  "rgba(255, 206, 86, 1)", // Yellow
+                  "rgba(75, 192, 192, 1)", // Green
+                  "rgba(153, 102, 255, 1)", // Purple
+                  "rgba(255, 159, 64, 1)", // Orange
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+
+        $.ajax({
+          url: "/get_statistik_pemesanan",
+          type: "GET",
+          success: function (response) {
+            var dataPemesanan = response.data_pemesanan;
+
+            chart.data.labels = dataPemesanan.labels;
+            chart.data.datasets[0].data = dataPemesanan.data;
+            chart.update();
+          },
+          error: function (error) {
+            console.log("Error:", error);
+          },
+        });
+        let ctx2 = document.getElementById("myChart2").getContext("2d");
+    let chart2 = new Chart(ctx2, {
+        type: "bar",
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: "Total Pendapatan per Bulan (Rp.)",
+                    data: [],
+                    backgroundColor: "rgba(75, 192, 192, 0.2)",
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+
+    $.ajax({
+        url: "/get_statistik_pendapatan",
+        type: "GET",
+        success: function (response) {
+            let dataStatistik = response.data;
+
+            // Ganti entry._id dengan entry._id jika diperlukan
+            let labels = dataStatistik.map(function (entry) {
+                return entry._id;
+            });
+            let totalHarga = dataStatistik.map(function (entry) {
+                return entry.totalHarga;
+            });
+
+            chart2.data.labels = labels;
+            chart2.data.datasets[0].data = totalHarga;
+            chart2.update();
+        },
+        error: function (error) {
+            console.log("Error:", error);
+        },
+    });
+      });
+    </script>
+
+    <style>
+      canvas.chart {
+        width: 100%;
+        /* Lebar sesuai dengan parent */
+        height: auto;
+        /* Tinggi menyesuaikan proporsi */
+        border: 1px solid #ccc;
+        /* Garis tepi sebagai pemisah */
+        display: block;
+        /* Membuat canvas menjadi blok agar dapat menyesuaikan lebar parent */
+        margin: 0 auto;
+        /* Posisi tengah jika perlu */
+      }
+    </style>
+  </head>
+
+  <body>
+    {% include 'header.html' %}
+
+    <nav aria-label="breadcrumb" class="m-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          <i>Beranda Admin</i>
+        </li>
+      </ol>
+    </nav>
+
+    <div class="geser" style="margin-left: 30px; margin-right: 30px">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-4">
+            <h4 class="mb-3">Pemesanan Tiket</h4>
+            <canvas id="myChart" class="chart"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="mb-4">
+            <h4 class="mb-3">Pendapatan</h4>
+            <canvas id="myChart2" class="chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- End Modal Edit -->
+  </body>
+</html>
