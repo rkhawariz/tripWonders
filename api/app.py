@@ -73,7 +73,7 @@ def login_user():
         if result:
             payload = {
                 "id": email,
-                "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 48),
+                "exp": datetime.now() + timedelta(seconds=60 * 60 * 48),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
         return jsonify(
